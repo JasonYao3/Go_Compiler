@@ -2,9 +2,9 @@ package vm
 
 import (
 	"fmt"
-	"go_interpreter/code"
-	"go_interpreter/compiler"
-	"go_interpreter/object"
+	"go_compiler/code"
+	"go_compiler/compiler"
+	"go_compiler/object"
 )
 
 const StackSize = 2048

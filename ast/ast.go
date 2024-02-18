@@ -2,7 +2,7 @@ package ast
 
 import (
 	"bytes"
-	"go_interpreter/token"
+	"go_compiler/token"
 	"strings"
 )
 

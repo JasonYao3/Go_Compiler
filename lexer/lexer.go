@@ -1,6 +1,6 @@
 package lexer
 
-import "go_interpreter/token"
+import "go_compiler/token"
 
 // supports ASCII characters
 // TODO: support Unicode

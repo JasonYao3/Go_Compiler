@@ -2,9 +2,9 @@ package compiler
 
 import (
 	"fmt"
-	"go_interpreter/ast"
-	"go_interpreter/code"
-	"go_interpreter/object"
+	"go_compiler/ast"
+	"go_compiler/code"
+	"go_compiler/object"
 )
 
 type Compiler struct {

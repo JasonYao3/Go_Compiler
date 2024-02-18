@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"go_interpreter/object"
+	"go_compiler/object"
 	"testing"
 )
 

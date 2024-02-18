@@ -2,11 +2,11 @@ package compiler
 
 import (
 	"fmt"
-	"go_interpreter/ast"
-	"go_interpreter/code"
-	"go_interpreter/lexer"
-	"go_interpreter/object"
-	"go_interpreter/parser"
+	"go_compiler/ast"
+	"go_compiler/code"
+	"go_compiler/lexer"
+	"go_compiler/object"
+	"go_compiler/parser"
 	"testing"
 )
 

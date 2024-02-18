@@ -3,7 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
-	"go_interpreter/ast"
+	"go_compiler/ast"
 	"hash/fnv"
 	"strings"
 )
