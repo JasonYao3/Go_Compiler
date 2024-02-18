@@ -70,7 +70,7 @@ func TestIntegerArithmetic(t *testing.T) {
 	tests := []vmTestCase{
 		{"1", 1},
 		{"2", 2},
-		{"1 + 2", 3}, 
+		{"1 + 2", 3},
 		{"1 - 2", -1},
 		{"1 * 2", 2},
 		{"4 / 2", 2},
@@ -102,23 +102,40 @@ func TestBooleanExpressions(t *testing.T) {
 	tests := []vmTestCase{
 		{"true", true},
 		{"false", false},
-		// {"1 < 2", true}, // fail
+		{"1 < 2", true},
 		{"1 > 2", false},
 		{"1 < 1", false},
 		{"1 > 1", false},
 		{"1 == 1", true},
 		{"1 != 1", false},
-		// {"1 == 2", false}, //fail
-		// {"1 != 2", true}, //fail
+		{"1 == 2", false},
+		{"1 != 2", true},
 		{"true == true", true},
 		{"false == false", true},
 		{"true == false", false},
 		{"true != false", true},
 		{"false != true", true},
-		// {"(1 < 2) == true", true}, //fail
-		// {"(1 < 2) == false", false}, //fail
+		{"(1 < 2) == true", true},
+		{"(1 < 2) == false", false},
 		{"(1 > 2) == true", false},
-		{"(1 > 2) == false", true}, 
+		{"(1 > 2) == false", true},
+		// // {"1 < 2", true}, // fail
+		// {"1 > 2", false},
+		// {"1 < 1", false},
+		// {"1 > 1", false},
+		// {"1 == 1", true},
+		// {"1 != 1", false},
+		// {"1 == 2", false}, //fail
+		// // {"1 != 2", true}, //fail
+		// {"true == true", true},
+		// {"false == false", true},
+		// {"true == false", false},
+		// {"true != false", true},
+		// {"false != true", true},
+		// // {"(1 < 2) == true", true}, //fail
+		// // {"(1 < 2) == false", false}, //fail
+		// {"(1 > 2) == true", false},
+		// {"(1 > 2) == false", true},
 	}
 	runVmTests(t, tests)
 }

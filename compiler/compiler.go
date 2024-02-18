@@ -42,7 +42,6 @@ func (c *Compiler) Compile(node ast.Node) error {
 			if err != nil {
 				return err
 			}
-
 			err = c.Compile(node.Left)
 			if err != nil {
 				return err

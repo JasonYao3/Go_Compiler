@@ -50,7 +50,9 @@ func (vm *VM) Run() error {
 			constIndex := code.ReadUint16(vm.instructions[ip+1:])
 			ip += 2 // will point to an opcode instead of an operand
 
-			err := vm.push(vm.constants[constIndex]) // push the constant in vm.constants into the stack.
+			err := vm.push(
+				vm.constants[constIndex],
+			) // push the constant in vm.constants into the stack.
 			if err != nil {
 				return err
 			}
@@ -62,12 +64,12 @@ func (vm *VM) Run() error {
 		case code.OpTrue:
 			err := vm.push(True)
 			if err != nil {
-				return err 
+				return err
 			}
 		case code.OpFalse:
 			err := vm.push(False)
 			if err != nil {
-				return err 
+				return err
 			}
 		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan:
 			err := vm.executeComparison(op)
@@ -122,7 +124,7 @@ func (vm *VM) executeBinaryIntegerOperation(op code.Opcode, left, right object.O
 	rightValue := right.(*object.Integer).Value
 
 	var result int64
-	
+
 	switch op {
 	case code.OpAdd:
 		result = leftValue + rightValue
@@ -142,7 +144,6 @@ func (vm *VM) executeBinaryIntegerOperation(op code.Opcode, left, right object.O
 func (vm *VM) executeComparison(op code.Opcode) error {
 	right := vm.pop()
 	left := vm.pop()
-
 	if left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ {
 		return vm.executeIntegerComparison(op, left, right)
 	}
@@ -153,13 +154,14 @@ func (vm *VM) executeComparison(op code.Opcode) error {
 	case code.OpNotEqual:
 		return vm.push(nativeBoolToBooleanObject(right != left))
 	default:
-		return fmt.Errorf("unknown operator: %d (%s %s)", op, left.Type(), right.Type())
+		return fmt.Errorf("unknown operator: %d (%s %s)",
+			op, left.Type(), right.Type())
 	}
 }
 
 func (vm *VM) executeIntegerComparison(op code.Opcode, left, right object.Object) error {
 	leftValue := left.(*object.Integer).Value
-	rightValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
 
 	switch op {
 	case code.OpEqual:
