@@ -119,23 +119,6 @@ func TestBooleanExpressions(t *testing.T) {
 		{"(1 < 2) == false", false},
 		{"(1 > 2) == true", false},
 		{"(1 > 2) == false", true},
-		// // {"1 < 2", true}, // fail
-		// {"1 > 2", false},
-		// {"1 < 1", false},
-		// {"1 > 1", false},
-		// {"1 == 1", true},
-		// {"1 != 1", false},
-		// {"1 == 2", false}, //fail
-		// // {"1 != 2", true}, //fail
-		// {"true == true", true},
-		// {"false == false", true},
-		// {"true == false", false},
-		// {"true != false", true},
-		// {"false != true", true},
-		// // {"(1 < 2) == true", true}, //fail
-		// // {"(1 < 2) == false", false}, //fail
-		// {"(1 > 2) == true", false},
-		// {"(1 > 2) == false", true},
 	}
 	runVmTests(t, tests)
 }
