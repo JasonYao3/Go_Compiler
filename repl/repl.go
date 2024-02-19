@@ -27,7 +27,7 @@ func Start(in io.Reader, out io.Writer) {
 	// macroEnv := object.NewEnvironment()
 
 	for {
-		fmt.Printf(PROMPT)
+		fmt.Fprintf(out, PROMPT)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -65,11 +65,9 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		for {
 		lastPopped := machine.LastPoppedStackElem()
 		io.WriteString(out, lastPopped.Inspect())
 		io.WriteString(out, "\n")
-		}
 
 	}
 }
