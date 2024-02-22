@@ -8,6 +8,7 @@ import (
 )
 
 const StackSize = 2048
+const GlobalSize = 65536
 
 var True = &object.Boolean{Value: true}
 var False = &object.Boolean{Value: false}
@@ -17,8 +18,9 @@ type VM struct {
 	constants    []object.Object
 	instructions code.Instructions
 
-	stack []object.Object
-	sp    int // Always points to the next free slot in the stack. If there's one element on the stack, located at index 0, the value of sp would be 1 and use stack[sp-1] to access the element.
+	stack   []object.Object
+	sp      int // Always points to the next free slot in the stack. If there's one element on the stack, located at index 0, the value of sp would be 1 and use stack[sp-1] to access the element.
+	globals []object.Object
 }
 
 func New(bytecode *compiler.Bytecode) *VM {
@@ -26,8 +28,9 @@ func New(bytecode *compiler.Bytecode) *VM {
 		instructions: bytecode.Instructions,
 		constants:    bytecode.Constants,
 
-		stack: make([]object.Object, StackSize),
-		sp:    0,
+		stack:   make([]object.Object, StackSize),
+		sp:      0,
+		globals: make([]object.Object, GlobalSize),
 	}
 }
 
@@ -97,13 +100,26 @@ func (vm *VM) Run() error {
 		case code.OpJumpNotTruthy:
 			pos := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
-			
+
 			condition := vm.pop()
 			if !isTruthy(condition) {
 				ip = pos - 1
 			}
 		case code.OpNull:
 			err := vm.push(Null)
+			if err != nil {
+				return err
+			}
+		case code.OpSetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+			ip += 2
+
+			vm.globals[globalIndex] = vm.pop()
+		case code.OpGetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+			ip += 2
+
+			err := vm.push(vm.globals[globalIndex])
 			if err != nil {
 				return err
 			}
@@ -247,4 +263,10 @@ func isTruthy(obj object.Object) bool {
 	default:
 		return true
 	}
+}
+
+func NewWithGlobalsStore(bytecode *compiler.Bytecode, s []object.Object) *VM {
+	vm := New(bytecode)
+	vm.globals = s
+	return vm
 }

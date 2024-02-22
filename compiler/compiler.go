@@ -17,6 +17,7 @@ type Compiler struct {
 	constants           []object.Object   // serves as the constant pool
 	lastInstruction     EmittedInstruction
 	previousInstruction EmittedInstruction
+	SymbolTable         *SymbolTable
 }
 
 func New() *Compiler {
@@ -25,6 +26,7 @@ func New() *Compiler {
 		constants:           []object.Object{},
 		lastInstruction:     EmittedInstruction{},
 		previousInstruction: EmittedInstruction{},
+		SymbolTable:         NewSymbolTable(),
 	}
 }
 
@@ -163,6 +165,15 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if err != nil {
 			return err
 		}
+		symbol := c.SymbolTable.Define(node.Name.Value)
+		c.emit(code.OpSetGlobal, symbol.Index)
+
+	case *ast.Identifier:
+		symbol, ok := c.SymbolTable.Resolve(node.Value)
+		if !ok {
+			return fmt.Errorf("undefined variable %s", node.Value)
+		}
+		c.emit(code.OpGetGlobal, symbol.Index)
 	}
 
 	return nil
@@ -234,4 +245,11 @@ func (c *Compiler) changeOperand(opPos int, operand int) {
 	newInstruction := code.Make(op, operand)
 
 	c.replaceInstruction(opPos, newInstruction)
+}
+
+func NewWithState(s *SymbolTable, constants []object.Object) *Compiler {
+	compiler := New()
+	compiler.SymbolTable = s
+	compiler.constants = constants
+	return compiler
 }

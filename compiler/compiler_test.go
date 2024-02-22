@@ -348,10 +348,10 @@ func TestGlobalLetStatements(t *testing.T) {
 		},
 		{
 			input: `
-		let one = 1;
-		let two = one;
-		two
-		`,
+			let one = 1;
+			let two = one;
+			two
+			`,
 			expectedConstants: []interface{}{1},
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstant, 0),
