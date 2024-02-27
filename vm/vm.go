@@ -16,11 +16,11 @@ var False = &object.Boolean{Value: false}
 var Null = &object.Null{}
 
 type VM struct {
-	constants    []object.Object
+	constants []object.Object
 
-	stack   []object.Object
-	sp      int // Always points to the next free slot in the stack. If there's one element on the stack, located at index 0, the value of sp would be 1 and use stack[sp-1] to access the element.
-	
+	stack []object.Object
+	sp    int // Always points to the next free slot in the stack. If there's one element on the stack, located at index 0, the value of sp would be 1 and use stack[sp-1] to access the element.
+
 	globals []object.Object
 
 	frames      []*Frame
@@ -35,7 +35,7 @@ func New(bytecode *compiler.Bytecode) *VM {
 	frames[0] = mainFrame
 
 	return &VM{
-		constants:    bytecode.Constants,
+		constants: bytecode.Constants,
 
 		stack: make([]object.Object, StackSize),
 		sp:    0,
@@ -63,7 +63,7 @@ func (vm *VM) Run() error {
 	var ins code.Instructions
 	var op code.Opcode
 
-	for vm.currentFrame().ip < len(vm.currentFrame().Instructions()) - 1 {
+	for vm.currentFrame().ip < len(vm.currentFrame().Instructions())-1 {
 		vm.currentFrame().ip++
 
 		ip = vm.currentFrame().ip
@@ -179,7 +179,24 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
-		}
+		case code.OpCall:
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
+			if !ok {
+				return fmt.Errorf("calling non-function")
+			}
+			frame := NewFrame(fn)
+			vm.pushFrame(frame)
+		case code.OpReturnValue:
+			returnValue := vm.pop()
+
+			vm.popFrame()
+			vm.pop()
+
+			err := vm.push(returnValue)
+			if err != nil {
+				return err
+			}
+		} 
 	}
 
 	return nil
