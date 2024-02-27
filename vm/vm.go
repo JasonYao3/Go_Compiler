@@ -196,6 +196,14 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpReturn:
+			vm.popFrame()
+			vm.pop()
+
+			err := vm.push(nil)
+			if err != nil {
+				return err
+			}
 		} 
 	}
 
