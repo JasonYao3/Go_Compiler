@@ -183,23 +183,14 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 		symbol := c.SymbolTable.Define(node.Name.Value)
-		if symbol.Scope == GlobalScope {
-			c.emit(code.OpSetGlobal, symbol.Index)
-		} else {
-			c.emit(code.OpSetLocal, symbol.Index)
-		}
+		c.emit(code.OpSetGlobal, symbol.Index)
 
 	case *ast.Identifier:
 		symbol, ok := c.SymbolTable.Resolve(node.Value)
 		if !ok {
 			return fmt.Errorf("undefined variable %s", node.Value)
 		}
-
-		if symbol.Scope == GlobalScope {
-			c.emit(code.OpGetGlobal, symbol.Index)
-		} else {
-			c.emit(code.OpGetLocal, symbol.Index)
-		}
+		c.emit(code.OpGetGlobal, symbol.Index)
 
 	case *ast.ArrayLiteral:
 		for _, el := range node.Elements {
@@ -262,10 +253,9 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpReturn)
 		}
 
-		numLocals := c.SymbolTable.numDefinitions
 		instructions := c.leaveScope()
 
-		compiledFn := &object.CompiledFunction{Instructions: instructions, NumLocals: numLocals}
+		compiledFn := &object.CompiledFunction{Instructions: instructions}
 		c.emit(code.OpConstant, c.addConstant(compiledFn))
 
 	case *ast.ReturnStatement:
@@ -390,7 +380,6 @@ func (c *Compiler) enterScope() {
 
 	c.scopes = append(c.scopes, scope)
 	c.scopeIndex++
-	c.SymbolTable = NewEnclosedSymbolTable(c.SymbolTable)
 }
 
 func (c *Compiler) leaveScope() code.Instructions {
@@ -398,7 +387,6 @@ func (c *Compiler) leaveScope() code.Instructions {
 
 	c.scopes = c.scopes[:len(c.scopes)-1]
 	c.scopeIndex--
-	c.SymbolTable = c.SymbolTable.Outer
 
 	return instructions
 }
