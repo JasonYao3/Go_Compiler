@@ -6,14 +6,15 @@ import (
 )
 
 type Frame struct {
-	fn          *object.CompiledFunction // Points to the compiled function referenced by the frame
-	ip          int                      // The instruction pointer in this frame
-	basePointer int                      // Points to the bottom of the stack of the current call frame. Frame pointer
+	//fn          *object.CompiledFunction // Points to the compiled function referenced by the frame
+	cl          *object.Closure // Points to an object.Closure
+	ip          int // The instruction pointer in this frame
+	basePointer int // Points to the bottom of the stack of the current call frame. Frame pointer
 }
 
-func NewFrame(fn *object.CompiledFunction, basePointer int) *Frame {
+func NewFrame(cl *object.Closure, basePointer int) *Frame {
 	f := &Frame{
-		fn:          fn,
+		cl:          cl,
 		ip:          -1,
 		basePointer: basePointer,
 	}
@@ -22,5 +23,5 @@ func NewFrame(fn *object.CompiledFunction, basePointer int) *Frame {
 }
 
 func (f *Frame) Instructions() code.Instructions {
-	return f.fn.Instructions
+	return f.cl.Fn.Instructions
 }
